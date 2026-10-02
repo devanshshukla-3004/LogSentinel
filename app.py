@@ -517,7 +517,6 @@ with left:
             xaxis_title=None,
             yaxis_title="Detections",
             font=dict(color="#2E1065", size=11),
-        title_font=dict(color="#2E1065", size=11),
             title_font=dict(color="#2E1065", size=11),
             plot_bgcolor="#FFFFFF",
             paper_bgcolor="#FFFFFF",
