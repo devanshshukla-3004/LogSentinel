@@ -445,7 +445,7 @@ else:
         use_container_width=True,
         hide_index=True,
         column_config={
-            "timestamp": st.column_config.DatetimeColumn("Timestamp"),
+            "timestamp": st.column_config.TextColumn("Timestamp"),
             "source_ip": st.column_config.TextColumn("Source IP"),
             "username": st.column_config.TextColumn("Username"),
             "threat": st.column_config.TextColumn("Threat"),
