@@ -236,10 +236,7 @@ with st.sidebar:
     st.divider()
 
     st.markdown("**Expected columns**")
-    st.code("timestamp
-source_ip
-username
-event_type", language="text")
+    st.code("timestamp\\nsource_ip\\nusername\\nevent_type", language="text")
 
     st.info(
         "Defensive analytics only. LogSentinel uses synthetic authentication data "
