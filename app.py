@@ -27,23 +27,55 @@ st.markdown(
     """
     <style>
         :root {
-            --navy: #17324D;
-            --blue: #2563EB;
-            --blue-soft: #EFF6FF;
-            --text: #172033;
-            --muted: #667085;
-            --border: #E4E7EC;
+            --purple: #7C3AED;
+            --purple-soft: #C4B5FD;
+            --text: #2E1065;
+            --muted: #7C6FA8;
+            --border: #E5E5EA;
             --surface: #FFFFFF;
-            --canvas: #F7F9FC;
-            --high: #D92D20;
-            --medium: #DC6803;
-            --low: #1570EF;
-            --success: #027A48;
+            --canvas: #F8F7FC;
+            --grid: #EEEEF3;
+            --high: #7C3AED;
+            --medium: #A78BFA;
+            --low: #C4B5FD;
+            --success: #7C3AED;
         }
 
         .stApp {
-            background: var(--canvas);
-            color: var(--text);
+            background: #F8F7FC;
+            color: #2E1065;
+        }
+
+        h1, h2, h3 {
+            color: #2E1065;
+            font-weight: 600;
+        }
+
+        hr {
+            border-color: #E5E5EA;
+        }
+
+        [data-testid="stMetric"] {
+            background: #FFFFFF;
+            border: 1px solid #E5E5EA;
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+
+        [data-testid="stMetricLabel"] {
+            color: #7C6FA8;
+        }
+
+        [data-testid="stMetricValue"] {
+            color: #2E1065;
+            font-weight: 600;
+        }
+
+        div[data-testid="stPlotlyChart"] {
+            background: #FFFFFF;
+            border: 1px solid #E5E5EA;
+            border-radius: 6px;
+            padding: 4px;
         }
 
         .block-container {
@@ -59,16 +91,15 @@ st.markdown(
 
         [data-testid="stSidebar"] h2,
         [data-testid="stSidebar"] h3 {
-            color: var(--navy);
+            color: var(--text);
         }
 
         .hero {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px 28px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 0 0 8px;
+            margin-bottom: 12px;
         }
 
         .hero-row {
@@ -83,15 +114,15 @@ st.markdown(
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--blue-soft);
-            border-radius: 12px;
+            background: #F1ECFF;
+            border-radius: 6px;
             font-size: 25px;
         }
 
         .hero-title {
             color: var(--navy);
-            font-size: 30px;
-            font-weight: 750;
+            font-size: 1.7rem;
+            font-weight: 600;
             line-height: 1.1;
             margin: 0;
         }
@@ -104,9 +135,9 @@ st.markdown(
 
         .status-pill {
             margin-left: auto;
-            background: #ECFDF3;
-            color: var(--success);
-            border: 1px solid #ABEFC6;
+            background: #F5F3FF;
+            color: var(--purple);
+            border: 1px solid #DDD6FE;
             border-radius: 999px;
             padding: 7px 12px;
             font-size: 12px;
@@ -126,8 +157,8 @@ st.markdown(
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 16px 18px;
-            min-height: 96px;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
+            min-height: 0;
+            box-shadow: none;
         }
 
         .metric-label {
@@ -140,7 +171,7 @@ st.markdown(
 
         .metric-value {
             color: var(--navy);
-            font-size: 26px;
+            font-size: 25px;
             font-weight: 750;
             margin-top: 6px;
         }
@@ -359,7 +390,7 @@ with left:
             text="count",
             template="plotly_white",
             color="threat",
-            color_discrete_sequence=["#2563EB", "#7C3AED", "#0EA5E9", "#475467"],
+            color_discrete_sequence=["#7C3AED", "#C4B5FD", "#A78BFA", "#DDD6FE"],
         )
         fig.update_layout(
             showlegend=False,
@@ -388,7 +419,7 @@ with right:
         xaxis_title="Events",
         yaxis_title=None,
     )
-    fig.update_traces(marker_color="#2563EB", textposition="outside", cliponaxis=False)
+    fig.update_traces(marker_color="#7C3AED", textposition="outside", cliponaxis=False)
     st.plotly_chart(fig, use_container_width=True)
 
 st.markdown('<div class="section-label">Authentication activity</div>', unsafe_allow_html=True)
@@ -413,7 +444,7 @@ fig.update_layout(
     xaxis_title=None,
     yaxis_title="Events",
 )
-fig.update_traces(line=dict(color="#2563EB", width=2.5), marker=dict(size=6))
+fig.update_traces(line=dict(color="#7C3AED", width=2.5), marker=dict(size=6))
 st.plotly_chart(fig, use_container_width=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
