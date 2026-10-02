@@ -56,8 +56,22 @@ st.markdown(
     }
 
     [data-testid="stCaptionContainer"] p,
-    .stCaption {
-        color: #766B96 !important;
+    .stCaption,
+    [data-testid="stMarkdownContainer"] p {
+        color: #5B4B7A !important;
+    }
+
+    [data-testid="stMarkdownContainer"] strong,
+    [data-testid="stMarkdownContainer"] b {
+        color: #2E1065 !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #5B4B7A !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: #2E1065 !important;
     }
 
     hr {
@@ -93,7 +107,7 @@ st.markdown(
     }
 
     .brand-desc {
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.82rem;
         margin-top: 3px;
     }
@@ -161,7 +175,7 @@ st.markdown(
         border-left: 3px solid #7C3AED;
         border-radius: 4px;
         padding: 9px 11px;
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.72rem;
         line-height: 1.45;
     }
@@ -175,7 +189,7 @@ st.markdown(
     }
 
     .section-sub {
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.75rem;
         margin: -4px 0 9px;
     }
@@ -196,7 +210,7 @@ st.markdown(
     }
 
     .kpi-label {
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.68rem;
         font-weight: 600;
         white-space: nowrap;
@@ -213,7 +227,7 @@ st.markdown(
     }
 
     .kpi-note {
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.64rem;
         margin-top: 3px;
         white-space: nowrap;
@@ -243,7 +257,7 @@ st.markdown(
     }
 
     .insight-text {
-        color: #766B96;
+        color: #5B4B7A;
         font-size: 0.7rem;
         line-height: 1.42;
     }
@@ -254,6 +268,16 @@ st.markdown(
         border: 1px solid #E5E5EA !important;
         border-radius: 7px !important;
         padding: 2px !important;
+    }
+
+    div[data-testid="stPlotlyChart"] .modebar {
+        opacity: 0.5 !important;
+    }
+
+    @media (max-width: 768px) {
+        div[data-testid="stPlotlyChart"] .modebar {
+            display: none !important;
+        }
     }
 
     div[data-testid="stDataFrame"] {
@@ -493,13 +517,32 @@ with left:
             xaxis_title=None,
             yaxis_title="Detections",
             font=dict(color="#2E1065", size=11),
+        title_font=dict(color="#2E1065", size=11),
+            title_font=dict(color="#2E1065", size=11),
             plot_bgcolor="#FFFFFF",
             paper_bgcolor="#FFFFFF",
             hovermode="x unified",
         )
-        fig.update_xaxes(showgrid=False, zeroline=False)
-        fig.update_yaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
-        fig.update_traces(textposition="outside", cliponaxis=False)
+        fig.update_xaxes(
+            showgrid=False,
+            zeroline=False,
+            tickfont=dict(color="#5B4B7A", size=11),
+            title_font=dict(color="#2E1065", size=11),
+            linecolor="#C9C2D8",
+        )
+        fig.update_yaxes(
+            showgrid=True,
+            gridcolor="#E7E3EE",
+            zeroline=False,
+            tickfont=dict(color="#5B4B7A", size=11),
+            title_font=dict(color="#2E1065", size=11),
+            linecolor="#C9C2D8",
+        )
+        fig.update_traces(
+            textposition="outside",
+            cliponaxis=False,
+            textfont=dict(color="#2E1065", size=11),
+        )
         st.plotly_chart(fig, use_container_width=True)
 
 with right:
@@ -523,9 +566,27 @@ with right:
         paper_bgcolor="#FFFFFF",
         hovermode="y",
     )
-    fig.update_xaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
-    fig.update_yaxes(showgrid=False, zeroline=False)
-    fig.update_traces(marker_color="#7C3AED", textposition="outside", cliponaxis=False)
+    fig.update_xaxes(
+        showgrid=True,
+        gridcolor="#E7E3EE",
+        zeroline=False,
+        tickfont=dict(color="#5B4B7A", size=11),
+        title_font=dict(color="#2E1065", size=11),
+        linecolor="#C9C2D8",
+    )
+    fig.update_yaxes(
+        showgrid=False,
+        zeroline=False,
+        tickfont=dict(color="#5B4B7A", size=11),
+        title_font=dict(color="#2E1065", size=11),
+        linecolor="#C9C2D8",
+    )
+    fig.update_traces(
+        marker_color="#7C3AED",
+        textposition="outside",
+        cliponaxis=False,
+        textfont=dict(color="#2E1065", size=11),
+    )
     st.plotly_chart(
         fig,
         use_container_width=True,
