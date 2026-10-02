@@ -10,219 +10,315 @@ from analyzer.parser import load_logs
 from analyzer.scorer import score_findings
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Page configuration
-# ─────────────────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="LogSentinel | Security Analytics",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Enterprise light theme
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Shared visual system — intentionally aligned with the HR Attrition project
+# ---------------------------------------------------------------------------
 st.markdown(
     """
     <style>
-        :root {
-            --purple: #7C3AED;
-            --purple-soft: #C4B5FD;
-            --text: #2E1065;
-            --muted: #7C6FA8;
-            --border: #E5E5EA;
-            --surface: #FFFFFF;
-            --canvas: #F8F7FC;
-            --grid: #EEEEF3;
-            --high: #7C3AED;
-            --medium: #A78BFA;
-            --low: #C4B5FD;
-            --success: #7C3AED;
+    :root {
+        --purple: #7C3AED;
+        --purple-light: #C4B5FD;
+        --purple-pale: #F3EEFF;
+        --text: #2E1065;
+        --muted: #7C6FA8;
+        --canvas: #F8F7FC;
+        --surface: #FFFFFF;
+        --border: #E5E5EA;
+        --grid: #EEEEF3;
+        --danger: #7C3AED;
+    }
+
+    .stApp {
+        background: var(--canvas);
+        color: var(--text);
+    }
+
+    .block-container {
+        max-width: 1500px;
+        padding-top: 1.5rem;
+        padding-bottom: 2.5rem;
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+        color: var(--text) !important;
+        font-weight: 600 !important;
+    }
+
+    h1 {
+        font-size: 1.7rem !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    p, label, .stMarkdown, [data-testid="stCaptionContainer"] {
+        color: var(--text);
+    }
+
+    [data-testid="stCaptionContainer"] p {
+        color: var(--muted) !important;
+    }
+
+    hr {
+        border-color: var(--border) !important;
+    }
+
+    /* Sidebar — explicit colors prevent dark-mode/browser inheritance */
+    [data-testid="stSidebar"] {
+        background: #FFFFFF !important;
+        border-right: 1px solid var(--border);
+    }
+
+    [data-testid="stSidebar"] * {
+        color: var(--text);
+    }
+
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
+    [data-testid="stSidebar"] small {
+        color: var(--muted) !important;
+    }
+
+    [data-testid="stSidebar"] .stFileUploaderDropzone {
+        background: #FBFAFE !important;
+        border: 1px dashed #CFC4E8 !important;
+        border-radius: 6px !important;
+    }
+
+    [data-testid="stSidebar"] .stFileUploaderDropzone > div {
+        color: var(--muted) !important;
+    }
+
+    [data-testid="stSidebar"] button {
+        border-radius: 6px !important;
+    }
+
+    /* Header */
+    .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2px;
+    }
+
+    .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 6px;
+        background: var(--purple-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex: 0 0 auto;
+    }
+
+    .brand-title {
+        color: var(--text);
+        font-size: 1.7rem;
+        font-weight: 600;
+        line-height: 1.15;
+    }
+
+    .brand-subtitle {
+        color: var(--muted);
+        font-size: 0.86rem;
+        margin-top: 3px;
+    }
+
+    .online-badge {
+        margin-left: auto;
+        color: var(--purple);
+        background: var(--purple-pale);
+        border: 1px solid #DDD6FE;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* Section headings */
+    .section-title {
+        color: var(--text);
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 18px 0 10px;
+    }
+
+    .section-caption {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: -5px;
+        margin-bottom: 10px;
+    }
+
+    /* KPI cards */
+    .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 14px;
+        min-height: 78px;
+    }
+
+    .kpi-label {
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    .kpi-value {
+        color: var(--text);
+        font-size: 1.45rem;
+        font-weight: 600;
+        line-height: 1.2;
+        margin-top: 5px;
+    }
+
+    .kpi-note {
+        color: var(--muted);
+        font-size: 0.68rem;
+        margin-top: 2px;
+    }
+
+    /* Small insight cards */
+    .insight {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 14px;
+        min-height: 82px;
+    }
+
+    .insight-title {
+        color: var(--text);
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .insight-text {
+        color: var(--muted);
+        font-size: 0.72rem;
+        line-height: 1.45;
+    }
+
+    /* Dataset info in sidebar */
+    .column-box {
+        background: #F8F6FD;
+        border: 1px solid #E5DFF2;
+        border-radius: 6px;
+        padding: 9px 10px;
+        font-family: monospace;
+        font-size: 0.72rem;
+        line-height: 1.65;
+        color: #5B438F !important;
+    }
+
+    .safe-box {
+        background: #F8F6FD;
+        border-left: 3px solid var(--purple);
+        border-radius: 4px;
+        padding: 10px 11px;
+        color: var(--muted) !important;
+        font-size: 0.72rem;
+        line-height: 1.45;
+    }
+
+    /* Streamlit-native metrics / charts */
+    [data-testid="stMetric"] {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 14px;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: var(--muted) !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: var(--text) !important;
+        font-weight: 600 !important;
+    }
+
+    div[data-testid="stPlotlyChart"] {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 3px;
+    }
+
+    div[data-testid="stDataFrame"] {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .footer {
+        color: #9A8DB8;
+        text-align: center;
+        font-size: 0.68rem;
+        padding-top: 22px;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .block-container {
+            padding: 1rem 0.8rem 2rem;
         }
 
-        .stApp {
-            background: #F8F7FC;
-            color: #2E1065;
+        .brand-title {
+            font-size: 1.35rem;
         }
 
-        h1, h2, h3 {
-            color: #2E1065;
-            font-weight: 600;
+        .brand-subtitle {
+            font-size: 0.74rem;
         }
 
-        hr {
-            border-color: #E5E5EA;
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
         }
 
-        [data-testid="stMetric"] {
-            background: #FFFFFF;
-            border: 1px solid #E5E5EA;
-            border-radius: 6px;
-            padding: 12px 14px;
+        .online-badge {
+            display: none;
         }
 
-        [data-testid="stMetricLabel"] {
-            color: #7C6FA8;
+        .section-title {
+            margin-top: 14px;
         }
 
-        [data-testid="stMetricValue"] {
-            color: #2E1065;
-            font-weight: 600;
+        .kpi {
+            padding: 10px 11px;
+            min-height: 70px;
+        }
+
+        .kpi-value {
+            font-size: 1.2rem;
+        }
+
+        .kpi-label {
+            font-size: 0.64rem;
+        }
+
+        .insight {
+            min-height: 0;
+            margin-bottom: 8px;
         }
 
         div[data-testid="stPlotlyChart"] {
-            background: #FFFFFF;
-            border: 1px solid #E5E5EA;
-            border-radius: 6px;
-            padding: 4px;
+            padding: 1px;
         }
-
-        .block-container {
-            max-width: 1500px;
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-        }
-
-        [data-testid="stSidebar"] {
-            background: #FFFFFF;
-            border-right: 1px solid var(--border);
-        }
-
-        [data-testid="stSidebar"] h2,
-        [data-testid="stSidebar"] h3 {
-            color: var(--text);
-        }
-
-        .hero {
-            background: transparent;
-            border: 0;
-            border-radius: 0;
-            padding: 0 0 8px;
-            margin-bottom: 12px;
-        }
-
-        .hero-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .shield {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #F1ECFF;
-            border-radius: 6px;
-            font-size: 25px;
-        }
-
-        .hero-title {
-            color: var(--navy);
-            font-size: 1.7rem;
-            font-weight: 600;
-            line-height: 1.1;
-            margin: 0;
-        }
-
-        .hero-subtitle {
-            color: var(--muted);
-            font-size: 14px;
-            margin-top: 6px;
-        }
-
-        .status-pill {
-            margin-left: auto;
-            background: #F5F3FF;
-            color: var(--purple);
-            border: 1px solid #DDD6FE;
-            border-radius: 999px;
-            padding: 7px 12px;
-            font-size: 12px;
-            font-weight: 650;
-            white-space: nowrap;
-        }
-
-        .section-label {
-            color: var(--navy);
-            font-size: 18px;
-            font-weight: 700;
-            margin: 8px 0 12px;
-        }
-
-        .metric-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 18px;
-            min-height: 0;
-            box-shadow: none;
-        }
-
-        .metric-label {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .metric-value {
-            color: var(--navy);
-            font-size: 25px;
-            font-weight: 750;
-            margin-top: 6px;
-        }
-
-        .metric-note {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 2px;
-        }
-
-        .insight-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 16px;
-            height: 100%;
-        }
-
-        .insight-title {
-            color: var(--navy);
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .insight-text {
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.45;
-        }
-
-        .footer {
-            color: #98A2B3;
-            text-align: center;
-            font-size: 11px;
-            padding-top: 24px;
-        }
-
-        div[data-testid="stDataFrame"] {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .stAlert {
-            border-radius: 10px;
-        }
-
-        button[kind="secondary"] {
-            border-radius: 8px;
-        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -230,56 +326,72 @@ st.markdown(
 
 default_path = Path(__file__).parent / "data" / "sample_auth_logs.csv"
 
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Sidebar
+# ---------------------------------------------------------------------------
+with st.sidebar:
+    st.markdown("## Analyst Console")
+    st.caption("Load an authentication log and inspect security signals.")
+
+    uploaded = st.file_uploader(
+        "Authentication log CSV",
+        type=["csv"],
+        help="CSV should contain timestamp, source_ip, username and event_type.",
+    )
+
+    st.markdown("**Required columns**")
+    st.markdown(
+        """
+        <div class="column-box">
+        timestamp<br>
+        source_ip<br>
+        username<br>
+        event_type
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="safe-box">
+        <strong>Defensive analytics only.</strong><br>
+        LogSentinel analyzes synthetic authentication data. It does not perform
+        authentication attempts, scanning, blocking, exploitation, or password collection.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+    st.caption("Rule-based detection · Explainable risk scoring")
+
+# ---------------------------------------------------------------------------
 # Header
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
 st.markdown(
     """
-    <div class="hero">
-        <div class="hero-row">
-            <div class="shield">🛡️</div>
-            <div>
-                <div class="hero-title">LogSentinel</div>
-                <div class="hero-subtitle">
-                    Security Log Analysis & Threat Detection Engine · Day 01 / 100
-                </div>
+    <div class="brand-row">
+        <div class="brand-icon">🛡️</div>
+        <div>
+            <div class="brand-title">LogSentinel</div>
+            <div class="brand-subtitle">
+                Security Log Analysis & Threat Detection · Day 01 / 100
             </div>
-            <div class="status-pill">● ANALYTICS ONLINE</div>
         </div>
+        <div class="online-badge">● ANALYTICS ONLINE</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Sidebar
-# ─────────────────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("## Analyst Console")
-    st.caption("Configure the dataset used by the detection engine.")
+st.divider()
 
-    uploaded = st.file_uploader(
-        "Authentication log CSV",
-        type=["csv"],
-        help="Upload a CSV containing timestamp, source_ip, username and event_type.",
-    )
-
-    st.divider()
-
-    st.markdown("**Expected columns**")
-    st.code("timestamp\\nsource_ip\\nusername\\nevent_type", language="text")
-
-    st.info(
-        "Defensive analytics only. LogSentinel uses synthetic authentication data "
-        "and does not perform authentication attempts, blocking, scanning, or exploitation."
-    )
-
-    st.divider()
-    st.caption("Rule-based detection · Explainable risk scoring")
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Data loading and analysis
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Load + analyze
+# ---------------------------------------------------------------------------
 try:
     df = load_logs(uploaded if uploaded is not None else default_path)
 except Exception as exc:
@@ -294,10 +406,10 @@ medium_count = int((findings["severity"] == "MEDIUM").sum()) if not findings.emp
 low_count = int((findings["severity"] == "LOW").sum()) if not findings.empty else 0
 avg_risk = float(findings["risk_score"].mean()) if not findings.empty else 0.0
 
-# ─────────────────────────────────────────────────────────────────────────────
-# KPI cards
-# ─────────────────────────────────────────────────────────────────────────────
-st.markdown('<div class="section-label">Security overview</div>', unsafe_allow_html=True)
+# ---------------------------------------------------------------------------
+# Overview
+# ---------------------------------------------------------------------------
+st.markdown('<div class="section-title">Security overview</div>', unsafe_allow_html=True)
 
 kpis = [
     ("Total events", f"{summary['total_events']:,}", "Authentication activity"),
@@ -312,72 +424,58 @@ for col, (label, value, note) in zip(cols, kpis):
     with col:
         st.markdown(
             f"""
-            <div class="metric-card">
-                <div class="metric-label">{label}</div>
-                <div class="metric-value">{value}</div>
-                <div class="metric-note">{note}</div>
+            <div class="kpi">
+                <div class="kpi-label">{label}</div>
+                <div class="kpi-value">{value}</div>
+                <div class="kpi-note">{note}</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-st.write("")
+# ---------------------------------------------------------------------------
+# Analyst summary
+# ---------------------------------------------------------------------------
+st.markdown('<div class="section-title">Analyst summary</div>', unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Analyst insights
-# ─────────────────────────────────────────────────────────────────────────────
-insight_cols = st.columns(3)
-with insight_cols[0]:
-    st.markdown(
-        f"""
-        <div class="insight-card">
-            <div class="insight-title">Threat posture</div>
-            <div class="insight-text">
-                {high_count} high, {medium_count} medium and {low_count} low severity
-                findings were identified in the current dataset.
+insights = [
+    (
+        "Threat posture",
+        f"{high_count} high · {medium_count} medium · {low_count} low severity findings.",
+    ),
+    (
+        "Average alert risk",
+        f"{avg_risk:.1f} / 100 across detected findings.",
+    ),
+    (
+        "Detection approach",
+        "Frequency, account targeting, event sequences and timestamps are correlated using explainable rules.",
+    ),
+]
+
+cols = st.columns(3)
+for col, (title, body) in zip(cols, insights):
+    with col:
+        st.markdown(
+            f"""
+            <div class="insight">
+                <div class="insight-title">{title}</div>
+                <div class="insight-text">{body}</div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+            """,
+            unsafe_allow_html=True,
+        )
 
-with insight_cols[1]:
-    st.markdown(
-        f"""
-        <div class="insight-card">
-            <div class="insight-title">Average alert risk</div>
-            <div class="insight-text">
-                {avg_risk:.1f} / 100 across detected findings, using transparent
-                rule-based scoring.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-with insight_cols[2]:
-    st.markdown(
-        """
-        <div class="insight-card">
-            <div class="insight-title">Detection approach</div>
-            <div class="insight-text">
-                Correlates authentication frequency, usernames, event sequences
-                and timestamps to surface suspicious behavior.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-st.write("")
-
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
 # Charts
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+st.markdown('<div class="section-title">Threat analysis</div>', unsafe_allow_html=True)
+
 left, right = st.columns(2)
 
 with left:
-    st.markdown('<div class="section-label">Threat distribution</div>', unsafe_allow_html=True)
+    st.markdown("**Threat distribution**")
+    st.caption("Detected threat categories in the current dataset.")
     if findings.empty:
         st.success("No detections for the current dataset.")
     else:
@@ -394,16 +492,18 @@ with left:
         )
         fig.update_layout(
             showlegend=False,
-            margin=dict(l=10, r=10, t=10, b=10),
-            height=330,
+            margin=dict(l=10, r=10, t=12, b=10),
+            height=320,
             xaxis_title=None,
             yaxis_title="Detections",
+            font=dict(color="#2E1065"),
         )
         fig.update_traces(textposition="outside", cliponaxis=False)
         st.plotly_chart(fig, use_container_width=True)
 
 with right:
-    st.markdown('<div class="section-label">Top source IPs</div>', unsafe_allow_html=True)
+    st.markdown("**Top source IPs**")
+    st.caption("Sources generating the most authentication events.")
     ips = top_source_ips(df)
     fig = px.bar(
         ips,
@@ -414,15 +514,17 @@ with right:
         template="plotly_white",
     )
     fig.update_layout(
-        margin=dict(l=10, r=10, t=10, b=10),
-        height=330,
+        margin=dict(l=10, r=10, t=12, b=10),
+        height=320,
         xaxis_title="Events",
         yaxis_title=None,
+        font=dict(color="#2E1065"),
     )
     fig.update_traces(marker_color="#7C3AED", textposition="outside", cliponaxis=False)
     st.plotly_chart(fig, use_container_width=True)
 
-st.markdown('<div class="section-label">Authentication activity</div>', unsafe_allow_html=True)
+st.markdown("**Authentication activity**")
+st.caption("Event volume aggregated into 30-minute windows.")
 
 timeline = (
     df.set_index("timestamp")
@@ -439,18 +541,20 @@ fig = px.line(
     template="plotly_white",
 )
 fig.update_layout(
-    margin=dict(l=10, r=10, t=10, b=10),
-    height=320,
+    margin=dict(l=10, r=10, t=12, b=10),
+    height=300,
     xaxis_title=None,
     yaxis_title="Events",
+    font=dict(color="#2E1065"),
 )
 fig.update_traces(line=dict(color="#7C3AED", width=2.5), marker=dict(size=6))
 st.plotly_chart(fig, use_container_width=True)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Findings table
-# ─────────────────────────────────────────────────────────────────────────────
-st.markdown('<div class="section-label">Security findings</div>', unsafe_allow_html=True)
+# ---------------------------------------------------------------------------
+# Findings
+# ---------------------------------------------------------------------------
+st.markdown('<div class="section-title">Security findings</div>', unsafe_allow_html=True)
+st.caption("Evidence generated by the detection rules. Risk scores are transparent and explainable.")
 
 if findings.empty:
     st.success("No findings in the current dataset.")
@@ -488,15 +592,15 @@ else:
         },
     )
 
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
 # Footer
-# ─────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
 st.markdown(
     """
     <div class="footer">
         LogSentinel v1.0 · Synthetic authentication dataset · Defensive security research
         <br>
-        Built with Python · Pandas · Plotly · Streamlit
+        Python · Pandas · Plotly · Streamlit
     </div>
     """,
     unsafe_allow_html=True,
