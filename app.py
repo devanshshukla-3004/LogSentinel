@@ -421,7 +421,7 @@ avg_risk = float(findings["risk_score"].mean()) if not findings.empty else 0.0
 # ============================================================================
 # Security overview
 # ============================================================================
-st.markdown('<div class="section">Security overview</div>', unsafe_allow_html=True)
+st.markdown("### Security overview")
 
 kpis = [
     ("Total events", f"{summary['total_events']:,}", "Authentication activity"),
@@ -431,22 +431,20 @@ kpis = [
     ("Security alerts", f"{len(findings):,}", f"{high_count} high severity"),
 ]
 
-kpi_html = '<div class="kpi-grid">'
-for label, value, note in kpis:
-    kpi_html += f"""
-    <div class="kpi">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value">{value}</div>
-        <div class="kpi-note">{note}</div>
-    </div>
-    """
-kpi_html += "</div>"
-st.markdown(kpi_html, unsafe_allow_html=True)
+# Native Streamlit columns are deliberately used here instead of custom HTML.
+# This avoids mobile rendering issues and keeps the cards responsive.
+kpi_cols = st.columns(5, gap="small")
+for col, (label, value, note) in zip(kpi_cols, kpis):
+    with col:
+        with st.container(border=True):
+            st.caption(label)
+            st.markdown(f"### {value}")
+            st.caption(note)
 
 # ============================================================================
 # Analyst summary
 # ============================================================================
-st.markdown('<div class="section">Analyst summary</div>', unsafe_allow_html=True)
+st.markdown("### Analyst summary")
 
 insights = [
     ("Threat posture", f"{high_count} high · {medium_count} medium · {low_count} low severity findings."),
@@ -457,16 +455,12 @@ insights = [
     ),
 ]
 
-insight_html = '<div class="insight-grid">'
-for title, body in insights:
-    insight_html += f"""
-    <div class="insight">
-        <div class="insight-title">{title}</div>
-        <div class="insight-text">{body}</div>
-    </div>
-    """
-insight_html += "</div>"
-st.markdown(insight_html, unsafe_allow_html=True)
+insight_cols = st.columns(3, gap="small")
+for col, (title, body) in zip(insight_cols, insights):
+    with col:
+        with st.container(border=True):
+            st.markdown(f"**{title}**")
+            st.caption(body)
 
 # ============================================================================
 # Threat analysis
@@ -494,14 +488,17 @@ with left:
         )
         fig.update_layout(
             showlegend=False,
-            margin=dict(l=8, r=8, t=12, b=8),
-            height=300,
+            margin=dict(l=10, r=10, t=8, b=28),
+            height=280,
             xaxis_title=None,
             yaxis_title="Detections",
-            font=dict(color="#2E1065"),
+            font=dict(color="#2E1065", size=11),
             plot_bgcolor="#FFFFFF",
             paper_bgcolor="#FFFFFF",
+            hovermode="x unified",
         )
+        fig.update_xaxes(showgrid=False, zeroline=False)
+        fig.update_yaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
         fig.update_traces(textposition="outside", cliponaxis=False)
         st.plotly_chart(fig, use_container_width=True)
 
@@ -517,16 +514,23 @@ with right:
         template="plotly_white",
     )
     fig.update_layout(
-        margin=dict(l=8, r=8, t=12, b=8),
-        height=300,
+        margin=dict(l=10, r=12, t=8, b=28),
+        height=280,
         xaxis_title="Events",
         yaxis_title=None,
-        font=dict(color="#2E1065"),
+        font=dict(color="#2E1065", size=11),
         plot_bgcolor="#FFFFFF",
         paper_bgcolor="#FFFFFF",
+        hovermode="y",
     )
+    fig.update_xaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
     fig.update_traces(marker_color="#7C3AED", textposition="outside", cliponaxis=False)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={"displaylogo": False, "responsive": True, "modeBarButtonsToRemove": ["lasso2d", "select2d"]},
+    )
 
 st.markdown("**Authentication activity**")
 timeline = (
@@ -538,16 +542,23 @@ timeline = (
 
 fig = px.line(timeline, x="timestamp", y="events", markers=True, template="plotly_white")
 fig.update_layout(
-    margin=dict(l=8, r=8, t=12, b=8),
-    height=290,
+    margin=dict(l=10, r=10, t=8, b=28),
+    height=280,
     xaxis_title=None,
     yaxis_title="Events",
-    font=dict(color="#2E1065"),
+    font=dict(color="#2E1065", size=11),
     plot_bgcolor="#FFFFFF",
     paper_bgcolor="#FFFFFF",
+    hovermode="x unified",
 )
+fig.update_xaxes(showgrid=False, zeroline=False)
+fig.update_yaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
 fig.update_traces(line=dict(color="#7C3AED", width=2.5), marker=dict(size=6))
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(
+    fig,
+    use_container_width=True,
+    config={"displaylogo": False, "responsive": True, "modeBarButtonsToRemove": ["lasso2d", "select2d"]},
+)
 
 # ============================================================================
 # Security findings
