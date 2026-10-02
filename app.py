@@ -607,13 +607,31 @@ fig.update_layout(
     xaxis_title=None,
     yaxis_title="Events",
     font=dict(color="#2E1065", size=11),
+    title_font=dict(color="#2E1065", size=11),
     plot_bgcolor="#FFFFFF",
     paper_bgcolor="#FFFFFF",
     hovermode="x unified",
 )
-fig.update_xaxes(showgrid=False, zeroline=False)
-fig.update_yaxes(showgrid=True, gridcolor="#EEEEF3", zeroline=False)
-fig.update_traces(line=dict(color="#7C3AED", width=2.5), marker=dict(size=6))
+fig.update_xaxes(
+    showgrid=False,
+    zeroline=False,
+    tickfont=dict(color="#5B4B7A", size=11),
+    title_font=dict(color="#2E1065", size=11),
+    linecolor="#C9C2D8",
+)
+fig.update_yaxes(
+    showgrid=True,
+    gridcolor="#E7E3EE",
+    zeroline=False,
+    tickfont=dict(color="#5B4B7A", size=11),
+    title_font=dict(color="#2E1065", size=11),
+    linecolor="#C9C2D8",
+)
+fig.update_traces(
+    line=dict(color="#7C3AED", width=2.5),
+    marker=dict(size=6),
+    hovertemplate="%{x|%d %b %H:%M}<br>Events: %{y}<extra></extra>",
+)
 st.plotly_chart(
     fig,
     use_container_width=True,
