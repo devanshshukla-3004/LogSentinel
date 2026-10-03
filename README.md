@@ -50,6 +50,20 @@ Authentication systems produce large volumes of events that are difficult to inv
            ↓
     Streamlit Analyst Dashboard
 
+## 🚀 Live demo
+
+**[Open LogSentinel dashboard](https://logsentinel-xon2pv6gnpi2cs7rtnj7ur.streamlit.app/)**
+
+## 🖥️ Dashboard preview
+
+The preview below highlights the security overview, analyst summary, threat distribution, source-IP activity, and evidence-backed findings table.
+
+<p align="center">
+  <img src="docs/dashboard-preview.svg" alt="LogSentinel security analytics dashboard preview" width="100%" />
+</p>
+
+> Preview graphic for the project README. Open the live demo above to interact with the Streamlit dashboard.
+
 ## 📊 Dashboard
 
 The dashboard provides:
