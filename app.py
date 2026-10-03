@@ -43,7 +43,7 @@ st.markdown(
 
     .block-container {
         max-width: 1450px !important;
-        padding: 1.25rem 2rem 2.5rem !important;
+        padding: 2.25rem 2rem 2.5rem !important;
     }
 
     /* ---- Global typography ---- */
@@ -296,7 +296,7 @@ st.markdown(
     /* ---- Mobile ---- */
     @media (max-width: 768px) {
         .block-container {
-            padding: 0.75rem 0.75rem 1.75rem !important;
+            padding: 1.25rem 0.75rem 1.75rem !important;
         }
 
         .brand {
